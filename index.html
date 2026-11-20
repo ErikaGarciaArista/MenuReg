@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -125,6 +125,11 @@
                         <span>Presentaciones</span>
                     </div>
 
+                    <div class='tab-link tab-daily' data-tab='tab16'>
+                        <span class="tab-icon"><i class='fa-solid fa-calendar-check'></i></span>
+                        <span>Archivos de actualización y monitoreo diario</span>
+                    </div>
+
                     <div class='tab-link js-viewer' data-url="https://app.powerbi.com/reportEmbed?reportId=07a1bd9e-2819-4a71-812a-d95073394848&autoAuth=true&ctid=923eb367-abae-4010-9989-b7cf33fb74a7" data-title="Buscador">
                         <span class="tab-icon"><i class='fa-solid fa-magnifying-glass'></i></span>
                         <span>Buscador</span>
@@ -206,11 +211,6 @@
                         <button class='btn-big' data-action="viewer" data-url="https://alvacomexico.sharepoint.com/sites/InformacinparaPresentacin/_layouts/15/Doc.aspx?sourcedoc={1b999d43-4d6b-4d5c-88e0-a511622556b8}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True" data-title="Infraestructura">
                             <i class='fa-solid fa-warehouse'></i>
                             <span class='label'>Infraestructura</span>
-                        </button>
-
-                        <button class='btn-big' data-action="viewer" data-url="https://alvacomexico.sharepoint.com/sites/InformacinparaPresentacin/_layouts/15/Doc.aspx?sourcedoc={038add0c-fda2-4836-8809-46c272ba1c9b}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True" data-title="Vacantes">
-                            <i class='fa-solid fa-user-plus'></i>
-                            <span class='label'>Vacantes</span>
                         </button>
 
                         <button class='btn-big disabled'>
@@ -529,6 +529,45 @@
                         </button>
                     </div>
 
+                    <!-- TAB ARCHIVOS DE ACTUALIZACIÓN Y MONITOREO DIARIO -->
+                    <div id='tab16' class='tab-content'>
+                        <div class="daily-banner">
+                            <i class="fa-solid fa-bell"></i>
+                            <div>
+                                <strong>Revisión diaria obligatoria</strong>
+                                <span>Visualiza y llena estos archivos todos los días.</span>
+                                <span class="daily-banner-progress" id="dailyBannerProgress"></span>
+                            </div>
+                        </div>
+
+                        <!-- Agrega aquí tus archivos, igual que en las demás secciones:
+                        <button class='btn-big' data-action="viewer" data-url="LINK_DEL_ARCHIVO" data-title="Nombre del archivo">
+                            <i class='fa-solid fa-file-excel'></i>
+                            <span class='label'>Nombre del archivo</span>
+                        </button>
+                        -->
+
+                        <button class='btn-big' data-action="viewer" data-url="https://alvacomexico.sharepoint.com/sites/Controldeenviyrecepcinderefaccionesforneas/_layouts/15/Doc.aspx?sourcedoc={08927504-1bd5-40c8-8b3c-172d52eaf544}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True" data-title="Equipos con más de 4 días sin ingresos">
+                            <i class='fa-solid fa-file-excel'></i>
+                            <span class='label'>Equipos con más de 4 días sin ingresos</span>
+                        </button>
+
+                        <button class='btn-big' data-action="viewer" data-url="https://alvacomexico-my.sharepoint.com/personal/lucia_jimenez_alvaco_com_mx/_layouts/15/Doc.aspx?sourcedoc={eda9416e-5858-4249-a5b3-2ee3554d5989}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True" data-title="Flotilla vehicular">
+                            <i class='fa-solid fa-truck'></i>
+                            <span class='label'>Flotilla vehicular</span>
+                        </button>
+
+                        <button class='btn-big' data-action="viewer" data-url="https://alvacomexico.sharepoint.com/sites/InformacinparaPresentacin/_layouts/15/Doc.aspx?sourcedoc={038add0c-fda2-4836-8809-46c272ba1c9b}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True" data-title="Vacantes">
+                            <i class='fa-solid fa-user-plus'></i>
+                            <span class='label'>Vacantes</span>
+                        </button>
+
+                        <button class='btn-big' data-action="viewer" data-url="https://alvacomexico-my.sharepoint.com/personal/mmora_alvaco_com_mx/_layouts/15/Doc.aspx?sourcedoc={bb3262f9-fe38-4518-a2aa-5b56e2c7525c}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True" data-title="Frecuencias de visitas">
+                            <i class='fa-solid fa-calendar-check'></i>
+                            <span class='label'>Frecuencias de visitas</span>
+                        </button>
+                    </div>
+
                     <!-- TAB FALTANTES -->
                     <div id='tab13' class='tab-content'>
                         <button class='btn-big' data-action="viewer" data-url="https://alvacomexico.sharepoint.com/sites/Check-InEntradasER/_layouts/15/Doc.aspx?sourcedoc={742fea08-57e1-4f92-a5e5-25586ed0d6af}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True" data-title="Faltantes Excel">
@@ -553,6 +592,27 @@
         <span id="toastText">Abriendo…</span>
     </div>
 
-    <script src="scripts.js?v=2"></script>
+    <!-- ===================== RECORDATORIO DIARIO ===================== -->
+    <div class="daily-modal hidden" id="dailyModal" role="dialog" aria-modal="true" aria-labelledby="dailyModalTitle">
+        <div class="daily-modal-card">
+            <div class="daily-modal-icon"><i class="fa-solid fa-bell"></i></div>
+            <h2 id="dailyModalTitle">¡Recordatorio diario!</h2>
+            <p id="dailyModalMsg">No olvides <strong>visualizar y llenar</strong> los <strong>Archivos de actualización y monitoreo diario</strong> el día de hoy.</p>
+            <div class="daily-progress">
+                <div class="daily-progress-counts">
+                    <span class="dp-pending"><i class="fa-solid fa-hourglass-half"></i> <strong id="dailyPendingCount">0</strong> pendientes</span>
+                    <span class="dp-done"><i class="fa-solid fa-circle-check"></i> <strong id="dailyDoneCount">0</strong> revisados</span>
+                </div>
+                <div class="daily-progress-bar"><div id="dailyProgressFill"></div></div>
+                <ul class="daily-progress-list" id="dailyProgressList"></ul>
+            </div>
+            <div class="daily-modal-actions">
+                <button type="button" class="daily-go" id="dailyGo"><i class="fa-solid fa-calendar-check"></i> Ir a los archivos</button>
+                <button type="button" class="daily-later" id="dailyLater">Más tarde</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js?v=5"></script>
 </body>
 </html>

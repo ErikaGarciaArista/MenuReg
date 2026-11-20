@@ -41,7 +41,11 @@ const SECCIONES_PERMITIDAS = [
     'tab15', // PayOut (todo)
     'tab9',  // Mapa de Regiones
     'tab13', // Faltantes (Excel y Power BI)
+    'tab16', // Archivos de actualización y monitoreo diario (todos lo ven)
 ];
+
+// Para que el recordatorio diario salga una sola vez por sesión
+const DAILY_REMINDER_KEY = 'muñelocos_daily_reminder';
 
 const BOTONES_PERMITIDOS = [
     // Estructura Operativa
@@ -51,7 +55,6 @@ const BOTONES_PERMITIDOS = [
     'Proceso de visitas PPT',
     'Proceso de visitas Word',
     'Proceso de visitas Lucidchart',
-    'Vacantes',
 
     // Ventas y Objetivos
     'Ventas Diarias',
@@ -175,12 +178,120 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    let currentUser = null;
+
     function enterApp(userName) {
+        currentUser = userName;
         aplicarPermisos(userName);
+        actualizarProgresoDiario();
         sidebarUserName.textContent = userName;
         loginScreen.classList.add('hidden');
         appShell.classList.remove('hidden');
+        mostrarRecordatorio();
     }
+
+    /* ===================== RECORDATORIO DIARIO ===================== */
+    const dailyModal = document.getElementById('dailyModal');
+    const dailyGo    = document.getElementById('dailyGo');
+    const dailyLater = document.getElementById('dailyLater');
+
+    /* ---- Progreso diario: qué archivos de tab16 ya se abrieron hoy ----
+       Se guarda en el navegador (localStorage) por usuario y por fecha,
+       así que cada día empieza de cero. */
+    function hoyISO() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function claveRevisados() {
+        return `muñelocos_revisados_${currentUser}_${hoyISO()}`;
+    }
+
+    function leerRevisados() {
+        try {
+            return JSON.parse(localStorage.getItem(claveRevisados())) || [];
+        } catch {
+            return [];
+        }
+    }
+
+    function marcarRevisado(title) {
+        const revisados = leerRevisados();
+        if (revisados.includes(title)) return;
+        revisados.push(title);
+        try {
+            localStorage.setItem(claveRevisados(), JSON.stringify(revisados));
+        } catch { /* sin almacenamiento: solo no se recuerda */ }
+        actualizarProgresoDiario();
+    }
+
+    function archivosDiarios() {
+        return [...document.querySelectorAll('#tab16 .btn-big[data-action="viewer"]:not(.disabled):not(.no-access)')];
+    }
+
+    function actualizarProgresoDiario() {
+        const botones = archivosDiarios();
+        const revisados = leerRevisados();
+        const total = botones.length;
+        let hechos = 0;
+
+        const lista = document.getElementById('dailyProgressList');
+        if (lista) lista.innerHTML = '';
+
+        botones.forEach(btn => {
+            const title = btn.dataset.title;
+            const ok = revisados.includes(title);
+            if (ok) hechos++;
+            btn.classList.toggle('is-reviewed', ok);
+
+            if (lista) {
+                const li = document.createElement('li');
+                li.className = ok ? 'done' : 'pending';
+                li.innerHTML = `<i class="fa-solid ${ok ? 'fa-circle-check' : 'fa-circle'}"></i> `;
+                li.appendChild(document.createTextNode(title));
+                lista.appendChild(li);
+            }
+        });
+
+        const pendientes = total - hechos;
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('dailyPendingCount', pendientes);
+        set('dailyDoneCount', hechos);
+
+        const fill = document.getElementById('dailyProgressFill');
+        if (fill) fill.style.width = total ? `${(hechos / total) * 100}%` : '0%';
+
+        set('dailyBannerProgress', total
+            ? (pendientes ? `Llevas ${hechos} de ${total} revisados hoy · ${pendientes} pendientes` : `¡Listo! Revisaste los ${total} archivos de hoy`)
+            : '');
+
+        // Texto de la alerta según si falta algo o ya está todo
+        const completo = total > 0 && pendientes === 0;
+        set('dailyModalTitle', completo ? '¡Todo al día!' : '¡Recordatorio diario!');
+        const msg = document.getElementById('dailyModalMsg');
+        if (msg) msg.innerHTML = completo
+            ? 'Ya revisaste todos los <strong>Archivos de actualización y monitoreo diario</strong> de hoy. ¡Buen trabajo!'
+            : 'No olvides <strong>visualizar y llenar</strong> los <strong>Archivos de actualización y monitoreo diario</strong> el día de hoy.';
+
+        return { total, hechos, pendientes };
+    }
+
+    function mostrarRecordatorio() {
+        if (!dailyModal || sessionStorage.getItem(DAILY_REMINDER_KEY)) return;
+        actualizarProgresoDiario();
+        dailyModal.classList.remove('hidden');
+    }
+
+    function cerrarRecordatorio() {
+        dailyModal.classList.add('hidden');
+        sessionStorage.setItem(DAILY_REMINDER_KEY, '1');
+    }
+
+    dailyGo.addEventListener('click', () => {
+        cerrarRecordatorio();
+        showTab('tab16', 'Archivos de actualización y monitoreo diario');
+    });
+    dailyLater.addEventListener('click', cerrarRecordatorio);
 
     // ¿Ya había una sesión abierta en esta pestaña del navegador?
     const savedSession = sessionStorage.getItem(SESSION_KEY);
@@ -217,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logoutBtn.addEventListener('click', () => {
         sessionStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem(DAILY_REMINDER_KEY);
         location.reload();
     });
 
@@ -348,6 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const action = el.dataset.action;
         if (action === 'viewer') {
             e.preventDefault();
+            if (el.closest('#tab16')) marcarRevisado(el.dataset.title);
             openLink(el.dataset.url, el.dataset.title);
         } else if (action === 'tab') {
             e.preventDefault();
